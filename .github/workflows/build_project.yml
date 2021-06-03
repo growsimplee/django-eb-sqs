@@ -26,3 +26,8 @@ jobs:
       - name: Build project
         run: |
           python setup.py bdist_wheel
+      - name: Archive code wheel file
+        uses: actions/upload-artifact@v2
+        with:
+          name: Project wheel
+          path: dist/*
