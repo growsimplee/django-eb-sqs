@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
-
+import json
 from eb_sqs import settings
 from eb_sqs.worker.queue_client import QueueClient, QueueDoesNotExistException, QueueClientException
 
@@ -64,6 +64,11 @@ class SqsQueueClient(QueueClient):
             queue = self._get_queue(queue_name)
             try:
                 queue.send_message(
+                    MessageBody=msg['data'],
+                    DelaySeconds=delay,
+                    MessageGroupId=msg['grpId']
+                )
+                queue.send_message(
                     MessageBody=msg,
                     DelaySeconds=delay
                 )
@@ -71,8 +76,9 @@ class SqsQueueClient(QueueClient):
                 if ex.response.get('Error', {}).get('Code', None) == 'AWS.SimpleQueueService.NonExistentQueue':
                     queue = self._get_queue(queue_name, use_cache=False)
                     queue.send_message(
-                        MessageBody=msg,
-                        DelaySeconds=delay
+                        MessageBody=msg['data],
+                        DelaySeconds=delay,
+                        MessageGroupId=msg['grpId']
                     )
                 else:
                     raise ex
