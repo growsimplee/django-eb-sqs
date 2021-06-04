@@ -13,7 +13,9 @@ class SqsQueueClient(QueueClient):
         # type: () -> None
         self.sqs = boto3.resource('sqs',
                                   region_name=settings.AWS_REGION,
-                                  config=Config(retries={'max_attempts': settings.AWS_MAX_RETRIES})
+                                  config=Config(retries={'max_attempts': settings.AWS_MAX_RETRIES}),
+                                  aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                  aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                                   )
         self.queue_cache = {}
 
