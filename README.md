@@ -5,7 +5,7 @@
 
 # Django EB SQS - Background Tasks for Amazon SQS
 
-django-eb-sqs is a simple task manager for AWS SQS. It uses SQS and the [boto3](https://github.com/boto/boto3) library.
+django-eb-sqs is a simple task manager for AWS SQS. It uses SQS and the [boto3](https://github.com/boto/boto3) library. GrowSimplee team has changed some properties for their use case.
 
 ### Installation
 
