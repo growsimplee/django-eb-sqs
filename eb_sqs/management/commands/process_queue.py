@@ -14,7 +14,7 @@ class Command(BaseCommand):
                             help='Name of queues to process, separated by commas')
 
     def handle(self, *args, **options):
-        queue_names_str = options.get('queue_names',CONSUME_QUEUE_NAMES)
+        queue_names_str = options.get('queue_names',None) if options.get('queue_names',None) else CONSUME_QUEUE_NAMES
         
         if queue_names_str in ["",None]:
             raise CommandError('Queue names (--queues) not specified')
