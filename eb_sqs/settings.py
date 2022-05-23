@@ -13,6 +13,7 @@ NO_QUEUES_WAIT_TIME_S = getattr(settings, 'NO_QUEUES_WAIT_TIME_S', 5)  # type: i
 
 AUTO_ADD_QUEUE = getattr(settings, 'EB_SQS_AUTO_ADD_QUEUE', False)  # type: bool
 QUEUE_PREFIX = getattr(settings, 'EB_SQS_QUEUE_PREFIX', '')  # type: str
+CONSUME_QUEUE_NAMES = getattr(settings, 'EB_SQS_CONSUME_QUEUE_NAMES', '')  # type: str
 DEFAULT_QUEUE = getattr(settings, 'EB_SQS_DEFAULT_QUEUE', 'eb-sqs-default')  # type: str
 
 EXECUTE_INLINE = getattr(settings, 'EB_SQS_EXECUTE_INLINE', False)  # type: bool
