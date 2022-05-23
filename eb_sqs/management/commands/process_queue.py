@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.core.management import BaseCommand, CommandError
 
 from eb_sqs.worker.service import WorkerService
-from eb_sqs.settings import CONSUME_QUEUE_NAMES as CQN
+from eb_sqs.settings import CONSUME_QUEUE_NAMES
 
 class Command(BaseCommand):
     help = 'Command to process tasks from one or more SQS queues'
@@ -14,9 +14,9 @@ class Command(BaseCommand):
                             help='Name of queues to process, separated by commas')
 
     def handle(self, *args, **options):
-        queue_names_str = options.get('queue_names',CQN)
+        queue_names_str = options.get('queue_names',CONSUME_QUEUE_NAMES)
         
-        if queue_names_str == "":
+        if queue_names_str in ["",None]:
             raise CommandError('Queue names (--queues) not specified')
             
         queue_names = [queue_name.rstrip() for queue_name in queue_names_str.split(',')]
