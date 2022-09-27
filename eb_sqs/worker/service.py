@@ -131,7 +131,7 @@ class WorkerService(object):
 
                 msg_entries = []
                 for msg in messages:
-                    self._execute_user_code(lambda: self._process_message(msg, worker))
+                    self._execute_user_code(lambda: self._process_message(msg, worker, queue))
                     msg_entries.append(
                         {"Id": msg.message_id, "ReceiptHandle": msg.receipt_handle}
                     )
@@ -204,8 +204,8 @@ class WorkerService(object):
                 lambda: dispatch_signal.send(sender=self.__class__, messages=messages)
             )
 
-    def _process_message(self, msg, worker):
-        # type: (Message, Worker) -> None
+    def _process_message(self, msg, worker, queue):
+        # type: (Message, Worker, Queue) -> None
         logger.debug("[django-eb-sqs] Read message {}".format(msg.message_id))
         try:
             receive_count = int(msg.attributes[self._RECEIVE_COUNT_ATTRIBUTE])
@@ -217,7 +217,7 @@ class WorkerService(object):
                     )
                 )
 
-            worker.execute(msg.body)
+            worker.execute(msg.body, queue)
 
             logger.debug("[django-eb-sqs] Processed message {}".format(msg.message_id))
         except ExecutionFailedException as exc:

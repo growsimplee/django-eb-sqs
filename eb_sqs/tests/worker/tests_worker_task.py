@@ -28,7 +28,7 @@ class WorkerTaskTest(TestCase):
         self.assertDictEqual(json.loads(msg), json.loads(self.dummy_msg))
 
     def test_deserialize_worker_task(self):
-        worker_task = WorkerTask.deserialize(self.dummy_msg)
+        worker_task = WorkerTask.deserialize(self.dummy_msg,dummy_function)
 
         self.assertEqual(worker_task.id, 'id-1')
         self.assertEqual(worker_task.group_id, 'group-5')
@@ -44,6 +44,6 @@ class WorkerTaskTest(TestCase):
         worker_task1 = WorkerTask('id-1', None, 'default', dummy_function, [], {'object': TestObject()}, 5, 0, None, True)
         msg = worker_task1.serialize()
 
-        worker_task2 = WorkerTask.deserialize(msg)
+        worker_task2 = WorkerTask.deserialize(msg,dummy_function)
         self.assertEqual(worker_task2.args, worker_task1.args)
         self.assertEqual(worker_task2.kwargs['object'].message, worker_task1.kwargs['object'].message)

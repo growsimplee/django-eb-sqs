@@ -81,27 +81,36 @@ class WorkerTask(object):
         return base64.b64encode(pickle.dumps(args, pickle.HIGHEST_PROTOCOL)).decode('utf-8')
 
     @staticmethod
-    def deserialize(msg):
-        # type: (unicode) -> WorkerTask
+    def deserialize(msg,queue):
+        # type: (unicode, str) -> WorkerTask
         task = json.loads(msg)
-
+        
+        try:
+            use_pickle = task.get('pickle', False)
+            group_id = task.get('groupId')
+            abs_func_name = task['func']
+            queue = task.get('queue', settings.DEFAULT_QUEUE)
+            kwargs = WorkerTask._unpickle_args(task['kwargs']) if use_pickle else task['kwargs']
+            args = WorkerTask._unpickle_args(task.get('args', [])) if use_pickle else task.get('args', [])
+        except:
+            use_pickle = False
+            kwargs = WorkerTask._unpickle_args(task) if use_pickle else task
+            args = []
+            queue = queue
+            abs_func_name = settings.FUNCTION[queue]
         id = task.get('id', str(uuid.uuid4()))
-        group_id = task.get('groupId')
-
-        abs_func_name = task['func']
+        
+        
         func_name = abs_func_name.split(".")[-1]
         func_path = ".".join(abs_func_name.split(".")[:-1])
         func_module = importlib.import_module(func_path)
 
         func = getattr(func_module, func_name)
 
-        use_pickle = task.get('pickle', False)
-        queue = task.get('queue', settings.DEFAULT_QUEUE)
+       
+        
 
-        task_args = task.get('args', [])
-        args = WorkerTask._unpickle_args(task_args) if use_pickle else task_args
-
-        kwargs = WorkerTask._unpickle_args(task['kwargs']) if use_pickle else task['kwargs']
+    
 
         max_retries = task.get('maxRetries', settings.DEFAULT_MAX_RETRIES)
         retry = task.get('retry', 0)

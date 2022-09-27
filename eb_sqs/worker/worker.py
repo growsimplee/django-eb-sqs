@@ -27,10 +27,10 @@ class Worker(object):
         super(Worker, self).__init__()
         self.queue_client = queue_client
 
-    def execute(self, msg):
-        # type: (unicode) -> Any
+    def execute(self, msg, queue):
+        # type: (unicode, queue) -> Any
         try:
-            worker_task = WorkerTask.deserialize(msg)
+            worker_task = WorkerTask.deserialize(msg,queue)
         except Exception as ex:
             logger.exception("Message %s is not a valid worker task: %s", msg, ex)
 
