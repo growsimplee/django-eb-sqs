@@ -97,7 +97,7 @@ class WorkerTask(object):
             kwargs = WorkerTask._unpickle_args(task) if use_pickle else task
             args = []
             queue = queue
-            abs_func_name = settings.FUNCTION[queue[name]]
+            abs_func_name = settings.FUNCTION[queue.name]
         id = task.get('id', str(uuid.uuid4()))
         
         
