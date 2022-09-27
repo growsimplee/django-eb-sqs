@@ -94,7 +94,7 @@ class WorkerTask(object):
             args = WorkerTask._unpickle_args(task.get('args', [])) if use_pickle else task.get('args', [])
         except:
             use_pickle = False
-            kwargs = WorkerTask._unpickle_args(task) if use_pickle else task
+            kwargs = {"data": task}
             args = []
             queue = queue
             abs_func_name = settings.FUNCTION[queue.name]
