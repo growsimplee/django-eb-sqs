@@ -240,9 +240,13 @@ class WorkerService(object):
 
     def get_queues_by_names(self, sqs, queue_names):
         # type: (ServiceResource, list) -> list
-        return [
-            sqs.get_queue_by_name(QueueName=queue_name) for queue_name in queue_names
-        ]
+        queues = []
+        for queue_name in queue_names:
+            queue = sqs.get_queue_by_name(QueueName=queue_name)
+            queue.name = queue_name
+            queues.append(queue)
+        return queues
+      
 
     def get_queues_by_prefixes(self, sqs, prefixes):
         # type: (ServiceResource, list) -> list
