@@ -192,7 +192,7 @@ class WorkerService(object):
     def poll_messages(self, queue):
         # type: (Queue) -> list
         return queue.receive_messages(
-            MaxNumberOfMessages=  settings.EB_QUEUE_MAX_MESSAGE_POLLING.get(queue.name, settings.MAX_NUMBER_OF_MESSAGES),
+            MaxNumberOfMessages=settings.MAX_NUMBER_OF_MESSAGES,
             WaitTimeSeconds=settings.WAIT_TIME_S,
             AttributeNames=[self._RECEIVE_COUNT_ATTRIBUTE],
         )

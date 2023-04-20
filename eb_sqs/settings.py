@@ -41,5 +41,3 @@ HEALTHCHECK_UNHEALTHY_PERIOD_S = getattr(settings, 'EB_SQS_HEALTHCHECK_UNHEALTHY
 HEALTHCHECK_FILE_NAME = getattr(settings, 'EB_SQS_HEALTHCHECK_FILE_NAME', 'healthcheck.txt')  # type: str
 
 FUNCTION = getattr(settings, 'FUNCTION', {})  # type: dict
-
-EB_QUEUE_MAX_MESSAGE_POLLING = getattr(settings, 'EB_QUEUE_MAX_MESSAGE_POLLING', {}) # type : int
