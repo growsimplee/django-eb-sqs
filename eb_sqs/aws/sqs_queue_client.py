@@ -72,12 +72,20 @@ class SqsQueueClient(QueueClient):
             queue = self._get_queue(queue_name)
             try:
                 id = json.loads(msg)["id"]
-                return queue.send_message(
-                    MessageBody=msg,
-                    MessageGroupId=group_id,
-                    DelaySeconds=delay,
-                    MessageDeduplicationId=id,
-                )
+                if queue_name.endswith(".fifo"):
+                    return queue.send_message(
+                        MessageBody=msg,
+                        MessageGroupId=group_id,
+                        DelaySeconds=delay,
+                        MessageDeduplicationId=id,
+                    )
+                else :
+                    return queue.send_message(
+                        MessageBody=msg,
+                        # MessageGroupId=group_id,
+                        DelaySeconds=delay,
+                        # MessageDeduplicationId=id,
+                    )
             except ClientError as ex:
                 if (
                     ex.response.get("Error", {}).get("Code", None)
