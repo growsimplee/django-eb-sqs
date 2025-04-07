@@ -131,10 +131,15 @@ class WorkerService(object):
 
                 msg_entries = []
                 for msg in messages:
-                    self._execute_user_code(lambda: self._process_message(msg, worker, queue))
-                    msg_entries.append(
-                        {"Id": msg.message_id, "ReceiptHandle": msg.receipt_handle}
-                    )
+                    try:
+                        self._execute_user_code(lambda: self._process_message(msg, worker, queue), raise_exception=True)
+                        msg_entries.append(
+                            {"Id": msg.message_id, "ReceiptHandle": msg.receipt_handle}
+                        )
+                    except Exception as exc:
+                        logger.error(
+                            "[django-eb-sqs] Error processing message {}: {}".format(msg.message_id, exc)
+                        )
 
                 self._send_signal(MESSAGES_PROCESSED, messages=messages)
 
@@ -226,9 +231,9 @@ class WorkerService(object):
                     msg.message_id, repr(exc)
                 )
             )
-
+            raise exc
     @staticmethod
-    def _execute_user_code(function):
+    def _execute_user_code(function, raise_exception=False):
         # type: (Any) -> None
         try:
             with django_db_management():
@@ -237,6 +242,8 @@ class WorkerService(object):
             logger.error(
                 "[django-eb-sqs] Unhandled error: {}".format(exc), exc_info=True
             )
+            if raise_exception:
+                raise exc
 
     def get_queues_by_names(self, sqs, queue_names):
         # type: (ServiceResource, list) -> list
