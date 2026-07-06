@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8]
+        python-version: [3.12]
     steps:
       - uses: actions/checkout@v2
       - name: Set up project with python ${{ matrix.python-version }}
